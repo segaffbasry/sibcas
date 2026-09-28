@@ -4,8 +4,9 @@ import gsap from "gsap";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import Contact from "@/components/Contact";
 import { focusOverlay, reducedMotion, useMotion } from "@/components/Motion";
-import { Arrow, BrandIcon, Logo, Pill, Social } from "@/components/ui";
+import { Arrow, Logo, Pill, Social } from "@/components/ui";
 import { contact, contactHref, footerLinks, legal, menu, socials } from "@/lib/site";
 
 const isExternal = (href: string) => /^https?:/.test(href);
@@ -77,8 +78,9 @@ function Menu({ open, tab, setTab, close }: { open: boolean; tab: number; setTab
   </div>;
 }
 
-/* Frameless header: no bar or box. The logo and items take the tone of whatever is under them
-   (sections mark themselves data-tone="dark"), hide on scroll down and return on scroll up. */
+/* MeiLog's floating header: a frosted bar (blur 26px, 8px corners, 68px tall) inset from the edges.
+   Its tone follows whatever is under it (sections mark themselves data-tone="dark"); it slides away on
+   scroll down and returns on scroll up. */
 function Header() {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState(0);
@@ -114,11 +116,12 @@ function Header() {
   const show = (index: number) => { setTab(index); setOpen(true); };
   return <>
     <header className="site-header" ref={header} data-tone="light">
-      <div className="wrap header-inner">
+      <div className="header-bar">
         <a href="/" className="brand" aria-label="SiBCAS home"><Logo /></a>
         <nav className="header-nav" aria-label="Main">
           {menu.map((entry, index) => <button key={entry.id} aria-haspopup="dialog" aria-expanded={open && tab === index} aria-controls="site-menu" onClick={() => show(index)}>{entry.label}</button>)}
         </nav>
+        <div className="header-cta"><Pill href={contactHref} external>Get in Touch</Pill></div>
         <button className="burger" aria-label="Open menu" aria-expanded={open} aria-controls="site-menu" onClick={() => show(0)}><span /><span /></button>
       </div>
     </header>
@@ -126,49 +129,52 @@ function Header() {
   </>;
 }
 
-/* Dubois' closing band: a coloured tile with the call to action, then a dark footer with link columns. */
+/* Live local time at the Bathgate head office, as MeiLog shows Böblingen's in its footer. */
+function Clock() {
+  const [time, setTime] = useState("");
+  useEffect(() => {
+    const fmt = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: "Europe/London" });
+    const tick = () => setTime(fmt.format(new Date()));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return <span>{time || "--:--:--"}</span>;
+}
+
+/* MeiLog's navy footer: brand and line, mono-labelled link columns, then a small-print bar with the clock. */
 function Footer() {
-  return <>
-    <section className="wrap cta-band">
-      <div className="cta-tile" data-tone="dark">
-        <h2 data-rise>Get in Touch</h2>
-        <div className="cta-foot">
-          <p data-rise>What ever type of project, we can cater for your Modular Building and Site Accommodation needs.</p>
-          <Pill href={contactHref} external>Contact Us</Pill>
-        </div>
-        <svg className="cta-rings" viewBox="0 0 400 400" aria-hidden="true">
-          {Array.from({ length: 9 }, (_, i) => <rect key={i} x={200 - (i + 1) * 21} y={200 - (i + 1) * 21} width={(i + 1) * 42} height={(i + 1) * 42} />)}
-        </svg>
-      </div>
-    </section>
-    <footer className="site-footer" data-tone="dark">
-      <div className="wrap footer-grid">
+  return <footer className="site-footer" data-tone="dark">
+    <div className="wrap footer-grid">
+      <div className="footer-brand">
         <a href="/" className="brand" aria-label="SiBCAS home"><Logo className="on-dark" /></a>
-        <div>
-          <h3>Useful Links</h3>
-          <ul className="footer-links">{footerLinks.map((link) => <li key={link.name}><a href={link.href}>{link.name}</a></li>)}</ul>
-        </div>
-        <div>
-          <h3>Head Office</h3>
-          <address>{contact.address.map((line) => <span key={line}>{line}<br /></span>)}</address>
-          <p className="footer-contact">
-            <a href={contact.phoneHref}>Tel: {contact.phone}</a>
-            <span>Fax: {contact.fax}</span>
-            <a href={`mailto:${contact.email}`}>{contact.email}</a>
-            <a href={contact.map} target="_blank" rel="noopener">See Google Map</a>
-          </p>
-        </div>
-        <div>
-          <h3>Stay Connected</h3>
-          <ul className="footer-social">{socials.map((s) => <li key={s.name}><a href={s.href} target="_blank" rel="noopener"><BrandIcon icon={s.icon} />{s.name}</a></li>)}</ul>
-        </div>
+        <p>Designers of the finest relocatable and modular buildings. Manufacturing Modular Buildings and Portable Site Cabins since 1973.</p>
+        <div className="socials">{socials.map((s) => <Social key={s.name} {...s} />)}</div>
       </div>
-      <div className="wrap footer-bar">
-        <p>©SiBCAS Ltd is registered in Scotland no. SC052604</p>
-        <p>{legal.map((link) => <a key={link.name} href={link.href}>{link.name}</a>)}</p>
+      <div>
+        <h3>↳ Useful Links</h3>
+        <ul className="footer-links">{footerLinks.map((link) => <li key={link.name}><a href={link.href}>{link.name}</a></li>)}</ul>
       </div>
-    </footer>
-  </>;
+      <div>
+        <h3>↳ Head Office</h3>
+        <address>{contact.company}<br />{contact.address.map((line) => <span key={line}>{line}<br /></span>)}</address>
+        <p className="footer-contact">
+          <a href={contact.phoneHref}>Tel: {contact.phone}</a>
+          <span>Fax: {contact.fax}</span>
+          <a href={`mailto:${contact.email}`}>{contact.email}</a>
+          <a href={contact.map} target="_blank" rel="noopener">See Google Map</a>
+        </p>
+      </div>
+      <div>
+        <h3>↳ Legal</h3>
+        <ul className="footer-links">{legal.map((link) => <li key={link.name}><a href={link.href}>{link.name}</a></li>)}</ul>
+      </div>
+    </div>
+    <div className="wrap footer-bar">
+      <p>© SiBCAS Ltd · Registered in Scotland no. SC052604</p>
+      <p>Bathgate <Clock /></p>
+    </div>
+  </footer>;
 }
 
 export function Shell({ children }: { children: ReactNode }) {
@@ -177,6 +183,7 @@ export function Shell({ children }: { children: ReactNode }) {
     <a className="skip-link" href="#main">Skip to content</a>
     <Header />
     <main id="main">{children}</main>
+    <Contact />
     <Footer />
   </>;
 }

@@ -1,13 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Instrument_Sans } from "next/font/google";
+import { Geist, PT_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { Shell } from "@/components/Chrome";
 import { posthogSnippet } from "@/lib/posthog";
 import "./globals.css";
 
-// Instrument Sans stands in for Dubois' Rand and carries the UI. Archivo at its widest cut echoes the
-// extended SiBCAS wordmark and is reserved for the hero and a few headline moments.
-const ui = Instrument_Sans({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-ui", display: "swap" });
-const display = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-display", display: "swap" });
+// The MeiLog type system: Switzer for headlines (self-hosted from Fontshare), Geist for copy and UI,
+// PT Mono for the "+ LABEL" eyebrows, numbers and small print.
+const display = localFont({
+  src: [
+    { path: "./fonts/Switzer-400.woff2", weight: "400" },
+    { path: "./fonts/Switzer-500.woff2", weight: "500" },
+    { path: "./fonts/Switzer-600.woff2", weight: "600" },
+  ],
+  variable: "--font-display", display: "swap",
+});
+const ui = Geist({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-ui", display: "swap" });
+const mono = PT_Mono({ subsets: ["latin"], weight: "400", variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: "SiBCAS | Modular Buildings & Site Accommodation for Hire or Sale", template: "%s | SiBCAS" },
@@ -16,14 +25,14 @@ export const metadata: Metadata = {
   icons: { icon: "/brand/cropped-favicon-192x192.jpg" },
 };
 
-export const viewport: Viewport = { themeColor: "#ffffff" };
+export const viewport: Viewport = { themeColor: "#f2f2f2" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-GB" className={`${ui.variable} ${display.variable}`}>
+    <html lang="en-GB" className={`${display.variable} ${ui.variable} ${mono.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: posthogSnippet }} />
-        <noscript><style>{"[data-rise],[data-clip],.hero [data-line]{visibility:visible!important;opacity:1!important}"}</style></noscript>
+        <noscript><style>{"[data-rise],[data-clip],.hero [data-line]{visibility:visible!important;opacity:1!important;transform:none!important}"}</style></noscript>
       </head>
       <body>
         <Shell>{children}</Shell>

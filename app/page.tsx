@@ -1,141 +1,133 @@
 import Hero from "@/components/Hero";
+import IsoArt from "@/components/IsoArt";
 import Testimonials from "@/components/Testimonials";
-import { Arrow, PostCard } from "@/components/ui";
-import { caseStudies, news } from "@/lib/posts";
-import { accreditations, cities, cityHref, sectors, service, testimonials } from "@/lib/site";
+import UkMap from "@/components/UkMap";
+import { Arrow, Label, Pill, PostCard } from "@/components/ui";
+import { caseStudies, formatDate, hrefOf, news } from "@/lib/posts";
+import { accreditations, contactHref, process, services, testimonials, values } from "@/lib/site";
 
-const Icon = ({ name }: { name: string }) => {
-  const paths: Record<string, string> = {
-    badge: "M16 3l3.2 2.3 3.9-.2 1.2 3.7 3.2 2.3-1.2 3.7 1.2 3.7-3.2 2.3-1.2 3.7-3.9-.2L16 27l-3.2-2.3-3.9.2-1.2-3.7-3.2-2.3 1.2-3.7-1.2-3.7 3.2-2.3 1.2-3.7 3.9.2zM11.5 15.5l3 3 6-6",
-    crane: "M6 28V6h2v22M3 28h10M8 6h20M8 6l6 6M24 6v7M22 13h4v4h-4zM8 12h6",
-    plan: "M4 7h24v18H4zM4 14h10v11M14 7v4M20 14h8M20 14v11",
-    leaf: "M7 25C7 13 14 6 27 6c0 13-7 20-19 20M7 25l11-11",
+const ValueIcon = ({ name }: { name: string }) => {
+  const d: Record<string, string> = {
+    shield: "M12 3 4.5 6v5.5c0 4.4 3.1 8.3 7.5 9.5 4.4-1.2 7.5-5.1 7.5-9.5V6L12 3Zm-3.2 9.2 2.3 2.3 4.3-4.6",
+    factory: "M3 20V10l5 3V10l5 3V10l5 3V4h3v16H3Zm3-3h2m3 0h2m3 0h2",
+    home: "M4 11 12 4l8 7M6 9.5V20h12V9.5M10 20v-5h4v5",
   };
-  return <svg className="tile-icon" viewBox="0 0 32 32" aria-hidden="true"><path d={paths[name]} fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" /></svg>;
+  return <svg viewBox="0 0 24 24" className="value-icon" aria-hidden="true"><path d={d[name]} fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" strokeLinecap="round" /></svg>;
 };
 
 export default function Home() {
-  const featured = caseStudies.filter((p) => p.hero).slice(0, 3);
+  const rows = caseStudies.filter((p) => p.hero).slice(0, 5);
   return <>
     <Hero />
 
-    {/* Dubois "Our philosophy": a small label on the left, the statement large on the right, a blue closing line. */}
-    <section className="section wrap split" id="welcome">
-      <p className="label" data-rise>Welcome to SiBCAS</p>
-      <div>
-        <h2 className="statement" data-rise>Manufacturing Modular Buildings and Portable Site Cabins since 1973.</h2>
-        <p className="statement accent" data-rise>Designers of the finest relocatable and modular buildings.</p>
-        <div className="two-col">
-          <p data-rise>At SiBCAS, we have been manufacturing and supplying Modular Buildings and Site Accommodation for over 50 years. We provide a reliable turnkey service and exceptional quality buildings.</p>
-          <p data-rise>From multi-functional Modular Building complexes to suit any purpose including Classrooms and school facilities, Offices, Changing rooms and Health Centres to self-contained welfare units, storage containers and site accommodation, we can help provide a solution to your hire or sale requirements.</p>
-        </div>
-      </div>
-    </section>
-
-    {/* Dubois "As seen in" row, carried by SiBCAS' accreditations. */}
-    <section className="wrap accred" aria-labelledby="accred-title">
-      <div className="split accred-head">
-        <p className="label" id="accred-title" data-rise>Our Accreditations</p>
-        <p className="accred-copy" data-rise>We are full members of the Modular and Portable Building Association (MPBA), Constructionline and the Contractors’ Health and Safety Assessment Scheme (CHAS), are an NICEIC approved contractor, and also have Building Confidence Accreditation.</p>
-      </div>
-      <div className="marquee" aria-label="Accreditation logos">
-        <div className="marquee-track">
-          {[0, 1].map((copy) => <ul key={copy} aria-hidden={copy === 1}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            {accreditations.map((a) => <li key={a.name}><img src={a.src} alt={copy ? "" : a.name} loading="lazy" /></li>)}
-          </ul>)}
-        </div>
-      </div>
-    </section>
-
-    {/* Dubois' gold promise tile with its two companion tiles. */}
-    <section className="wrap promise">
-      <div className="promise-main" data-tone="dark">
-        <h2 className="statement" data-rise>Our Modular Buildings are manufactured in house to your specific requirements, providing a tailored bespoke service.</h2>
-        <p data-rise>We design exceptional Modular Buildings to suit any function.</p>
-        <svg className="promise-grid" viewBox="0 0 300 300" aria-hidden="true">
-          {Array.from({ length: 100 }, (_, i) => <circle key={i} cx={(i % 10) * 30 + 15} cy={Math.floor(i / 10) * 30 + 15} r={1 + ((i % 10) + Math.floor(i / 10)) / 9} />)}
-        </svg>
-      </div>
-      <a className="promise-link" href="https://sibcas.co.uk/sectors/" data-tone="dark">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/media/2024-09-stretford-school-photos-feb-2024-22.jpg" alt="" loading="lazy" />
-        <span className="promise-label">Sectors<Arrow /></span>
-        <span className="promise-sub">Our Modular Buildings are manufactured in house to your specific requirements.</span>
-      </a>
-      <a className="promise-link" href="https://sibcas.co.uk/flexible-accommodation/" data-tone="dark">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/media/2024-09-transport-car-park-units.jpg" alt="" loading="lazy" />
-        <span className="promise-label">Flexible Accommodation<Arrow /></span>
-        <span className="promise-sub">Discover our versatile range of Modular Buildings and Site Accommodation, expertly designed to meet all your specific needs.</span>
-      </a>
-    </section>
-
-    {/* Dubois' feature tiles beside a tall photograph. */}
-    <section className="wrap service">
-      <div className="service-tiles">
-        {service.map((s) => <article className="tile" key={s.title}>
-          <h3 data-rise>{s.title}<sup>+</sup></h3>
-          <p>{s.text}</p>
-          <Icon name={s.icon} />
-        </article>)}
-      </div>
-      <div className="service-media" data-clip>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img data-parallax src="/media/2024-09-colourful-hallway-sibcas.jpg" alt="Inside a SiBCAS modular building" loading="lazy" />
-      </div>
-    </section>
-
-    {/* Dubois "About" with its global reach: here the depots and the UK cities SiBCAS serves. */}
-    <section className="section wrap about" aria-labelledby="about-title">
-      <div className="split">
-        <h2 className="display about-title" id="about-title" data-rise>About SiBCAS</h2>
+    {/* + WHO IS SIBCAS — a navy statement whose closing clause drops to grey, copy to the right. */}
+    <section className="section wrap intro" aria-labelledby="intro-title">
+      <Label>Who is SiBCAS</Label>
+      <div className="intro-grid">
         <div>
-          <p className="lede" data-rise>Sibcas Ltd is a leading provider of Quality Modular Buildings and Relocatable Accommodation. Established in 1973, Sibcas is a family-owned and managed business.</p>
-          <p className="lede accent" data-rise>We have 5 strategically located depots throughout the UK, employing in house skilled tradespersons.</p>
-          <a className="text-link" href="https://sibcas.co.uk/about/" data-rise>Learn More<Arrow /></a>
+          <h2 className="h2" id="intro-title" data-rise>Sibcas Ltd is a leading provider of Quality Modular Buildings and Relocatable Accommodation <span className="muted">– family-owned and managed since 1973.</span></h2>
+          <div className="intro-cta" data-rise><Pill href={contactHref} tone="dark" external>Start an Enquiry</Pill></div>
+        </div>
+        <p className="intro-copy" data-rise>From multi-functional Modular Building complexes to suit any purpose including Classrooms and school facilities, Offices, Changing rooms and Health Centres to self-contained welfare units, storage containers and site accommodation, we can help provide a solution to your hire or sale requirements.</p>
+      </div>
+    </section>
+
+    {/* MeiLog's ruled service grid: code and title, a line drawing, then a numbered list. */}
+    <section className="services" id="services" aria-label="What we do">
+      <div className="services-grid">
+        {services.map((s) => <article className="service" key={s.code}>
+          <header className="service-head">
+            <p className="mono">{s.code}</p>
+            <h3><a href={s.href}>{s.title}</a></h3>
+          </header>
+          <div className="service-art"><IsoArt kind={s.art} /></div>
+          <ol className="service-list">
+            {s.items.map((item, i) => <li key={item.name}><a href={item.href}><span>{item.name}</span><span className="mono">{String(i + 1).padStart(2, "0")}</span></a></li>)}
+          </ol>
+        </article>)}
+        <article className="service service-note">
+          <p className="mono">06 — SECTORS</p>
+          <p className="service-note-copy">Our Modular Buildings are manufactured in house to your specific requirements, providing a tailored bespoke service.</p>
+          <Pill href="https://sibcas.co.uk/sectors/" tone="dark" external>All Sectors</Pill>
+        </article>
+      </div>
+    </section>
+
+    {/* + HOW WE WORK — navy-washed photograph, statement, five bracketed steps. */}
+    <section className="process" data-tone="dark" aria-labelledby="process-title">
+      <div className="process-media" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img data-parallax src="/media/2024-09-corridor-units-sibcas.jpg" alt="" loading="lazy" />
+      </div>
+      <div className="wrap process-inner">
+        <Label className="on-dark">How we work</Label>
+        <h2 className="h2" id="process-title" data-rise>Sibcas can arrange short- or long-term rental contracts on accommodation to suit almost any function, from concept and design through to final site installation.</h2>
+        <ol className="steps">
+          {process.map((step, i) => <li key={step.title} data-rise>
+            <span className="mono">[{String(i + 1).padStart(2, "0")}]</span>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </li>)}
+        </ol>
+      </div>
+    </section>
+
+    {/* + ABOUT SIBCAS — offset statement and three values, then the accreditation strip. */}
+    <section className="section wrap about" aria-labelledby="about-title">
+      <Label>About SiBCAS</Label>
+      <div className="about-body">
+        <h2 className="h2" id="about-title" data-rise>We are extremely proud of the fact that all of our units are manufactured in-house <span className="muted">and delivered from our own fleet of commercial vehicles and lorry mounted cranes.</span></h2>
+        <div className="values">
+          {values.map((v) => <div className="value" key={v.title} data-rise>
+            <ValueIcon name={v.icon} />
+            <h3>{v.title}</h3>
+            <p>{v.text}</p>
+          </div>)}
         </div>
       </div>
-      <div className="split cities">
-        <p className="label" data-rise>Modular Buildings across the UK</p>
-        <ul className="city-list">
-          {cities.map((city) => <li key={city}><a href={cityHref(city)}>{city}</a></li>)}
-        </ul>
+      <div className="accred" aria-label="Our Accreditations">
+        <p className="mono">Our Accreditations</p>
+        <div className="marquee">
+          <div className="marquee-track">
+            {[0, 1].map((copy) => <ul key={copy} aria-hidden={copy === 1}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {accreditations.map((a) => <li key={a.name}><img src={a.src} alt={copy ? "" : a.name} loading="lazy" /></li>)}
+            </ul>)}
+          </div>
+        </div>
       </div>
     </section>
 
-    {/* Dubois "Our Solutions": a text tile, then photographs. */}
-    <section className="wrap sectors" aria-labelledby="sectors-title">
-      <div className="tile sectors-intro">
-        <h2 className="display" id="sectors-title" data-rise>Sectors</h2>
-        <p data-rise>SiBCAS specialises in providing high-end modular buildings including classrooms, health centres, office space and sports facilities, that combine the comfort and reliability of a permanent building with the flexibility of being relocatable.</p>
-        <a className="text-link" href="https://sibcas.co.uk/sectors/">Learn More<Arrow /></a>
-      </div>
-      {sectors.map((s) => <a className="sector" key={s.name} href={s.href}>
-        <span className="sector-name">{s.name}<Arrow /></span>
-        <span className="sector-media" data-clip>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img data-parallax src={s.img} alt="" loading="lazy" />
-        </span>
-        <span className="sector-text">{s.text}</span>
-      </a>)}
-    </section>
-
-    <section className="section wrap" aria-labelledby="cs-title">
-      <div className="row-head">
-        <h2 className="h-section" id="cs-title" data-rise>Case Studies</h2>
+    {/* + CASE STUDIES — MeiLog's numbered reference rows; the photograph appears as you hover. */}
+    <section className="section refs" aria-labelledby="refs-title">
+      <div className="wrap refs-head">
+        <Label>Case Studies</Label>
         <a className="text-link" href="/case-studies">All {caseStudies.length} case studies<Arrow /></a>
       </div>
-      <div className="cards">{featured.map((p) => <PostCard key={p.slug} post={p} />)}</div>
+      <h2 className="sr-only" id="refs-title">Case Studies</h2>
+      <ol className="ref-list">
+        {rows.map((p, i) => <li key={p.slug}>
+          <a className="wrap ref" href={hrefOf(p)}>
+            <span className="ref-num">{i + 1}</span>
+            <span className="ref-title">{p.title}</span>
+            <span className="ref-copy">{p.excerpt.length > 170 ? p.excerpt.slice(0, 170).replace(/\s+\S*$/, "") + "…" : p.excerpt}<em className="mono">{[formatDate(p.date), ...p.categories].join(" · ")}</em></span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {p.hero && <img className="ref-img" src={p.hero} alt="" loading="lazy" />}
+          </a>
+        </li>)}
+      </ol>
     </section>
+
+    <UkMap />
 
     <Testimonials items={testimonials} />
 
     <section className="section wrap" aria-labelledby="news-title">
-      <div className="row-head">
-        <h2 className="h-section" id="news-title" data-rise>Latest News</h2>
+      <div className="refs-head">
+        <Label>Latest News</Label>
         <a className="text-link" href="/news">View All News<Arrow /></a>
       </div>
+      <h2 className="sr-only" id="news-title">Latest News</h2>
       <div className="cards">{news.slice(0, 3).map((p) => <PostCard key={p.slug} post={p} />)}</div>
     </section>
   </>;

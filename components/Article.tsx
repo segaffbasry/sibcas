@@ -1,4 +1,4 @@
-import { Arrow, Pill, PostCard } from "@/components/ui";
+import { Arrow, Label, Pill, PostCard } from "@/components/ui";
 import type { Block, Post } from "@/lib/posts";
 import { caseStudies, formatDate, hrefOf, neighbours, news } from "@/lib/posts";
 
@@ -11,7 +11,7 @@ function Body({ blocks }: { blocks: Block[] }) {
   const flush = (key: number) => {
     if (!label && !buffer.length) return;
     out.push(<section className="split article-row" key={`s${key}`}>
-      <h2 className="label" data-rise>{label ?? ""}</h2>
+      <h2 className="mono row-label" data-rise>{label ?? ""}</h2>
       <div className="prose">{buffer.map((b, i) => b.t === "p" ? <div key={i} data-rise dangerouslySetInnerHTML={{ __html: b.html }} /> : null)}</div>
     </section>);
     label = null; buffer = [];
@@ -43,10 +43,10 @@ export default function Article({ post }: { post: Post }) {
   const { newer, older } = neighbours(post);
   const related = (isNews ? news : caseStudies).filter((p) => p.slug !== post.slug && (isNews || p.categories.some((c) => post.categories.includes(c)))).slice(0, 3);
   return <article>
-    <header className="article-head wrap split">
-      <p className="label" data-rise><a href={isNews ? "/news" : "/case-studies"}>{isNews ? "Latest News" : "Case Studies"}</a></p>
-      <div>
-        <h1 className="display page-title" data-rise>{post.title}</h1>
+    <header className="article-head wrap">
+      <Label><a href={isNews ? "/news" : "/case-studies"}>{isNews ? "Latest News" : "Case Studies"}</a></Label>
+      <div className="page-head-body">
+        <h1 className="page-title" data-rise>{post.title}</h1>
         {post.subtitle && <p className="lede accent" data-rise>{post.subtitle}</p>}
         <dl className="meta" data-rise>
           <div><dt>Posted on</dt><dd><time dateTime={post.date}>{formatDate(post.date)}</time></dd></div>
@@ -67,8 +67,8 @@ export default function Article({ post }: { post: Post }) {
       {newer ? <a href={hrefOf(newer)} className="pager-next"><span>Next</span>{newer.title}<Arrow /></a> : <span />}
     </nav>
     {related.length > 0 && <section className="section wrap">
-      <div className="row-head">
-        <h2 className="h-section" data-rise>{isNews ? "More News" : "Related Case Studies"}</h2>
+      <div className="refs-head">
+        <Label>{isNews ? "More News" : "Related Case Studies"}</Label>
         <a className="text-link" href={isNews ? "/news" : "/case-studies"}>View all<Arrow /></a>
       </div>
       <div className="cards">{related.map((p) => <PostCard key={p.slug} post={p} />)}</div>

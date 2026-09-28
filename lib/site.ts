@@ -169,3 +169,58 @@ export const cities = ["Aberdeen", "Belfast", "Birmingham", "Bradford", "Bristol
 export const cityHref = (city: string) => city === "Dundee"
   ? live("modular-buildings-dundee/")
   : live(`modular-buildings/temporary-office-${city.toLowerCase().replace(/ /g, "-")}/`);
+
+// MeiLog's service grid: five disciplines, each a numbered list of real SiBCAS pages and ranges.
+export type Service = { code: string; title: string; href: string; art: "modular" | "cabin" | "crane" | "framework" | "plan"; items: NavLink[] };
+export const services: Service[] = [
+  { code: "01 — BUILD", title: "Modular Buildings", href: live("modular-buildings/"), art: "modular", items: [
+    { name: "Classrooms", href: live("modular-buildings/classrooms/") },
+    { name: "Office", href: live("modular-buildings/office/") },
+    { name: "Health", href: live("modular-buildings/health/") },
+    { name: "Commercial", href: live("modular-buildings/commercial/") },
+    { name: "Sports Facilities", href: live("modular-buildings/sports-facilities/") },
+    { name: "Rail and Civils", href: live("modular-buildings/rail-and-civils/") },
+    { name: "Construction", href: live("modular-buildings/construction/") },
+  ] },
+  { code: "02 — HIRE", title: "Site Accommodation", href: live("site-accommodation/"), art: "cabin", items: [
+    { name: "Anti-Vandal Cabin Range", href: live("site-accommodation/") },
+    { name: "Scout Cabin Range", href: live("site-accommodation/") },
+    { name: "Jackcabin Range", href: live("site-accommodation/") },
+    { name: "Eco Executive Cabin Range", href: live("site-accommodation/") },
+    { name: "Portable Cabins", href: live("portable-cabins/") },
+    { name: "Flexible Accommodation", href: live("flexible-accommodation/") },
+  ] },
+  { code: "03 — BUY", title: "Buildings for Sale", href: live("units-for-sale/"), art: "crane", items: [
+    { name: "Units for Sale", href: live("units-for-sale/") },
+    { name: "Used Site Cabins", href: live("used-site-cabins/") },
+    { name: "Used Modular Buildings for Sale", href: live("used-modular-buildings-for-sale/") },
+    { name: "Used Sales Contact", href: live("used-sales-contact/") },
+  ] },
+  { code: "04 — PROCURE", title: "Procurement & Frameworks", href: live("procurement-frameworks/"), art: "framework", items: [
+    { name: "ESPO Modular Buildings Framework (953_26)", href: live("procurement-frameworks/") },
+    { name: "LHC Modular Buildings (MB3) Framework", href: live("procurement-frameworks/") },
+    { name: "NHS SBS Modular Buildings 3 Framework", href: live("procurement-frameworks/") },
+  ] },
+  { code: "05 — DESIGN", title: "Turnkey Package", href: live("about/"), art: "plan", items: [
+    { name: "CAD Technicians", href: live("about/") },
+    { name: "Project Managers", href: live("about/") },
+    { name: "Structural Engineers", href: live("about/") },
+    { name: "Quantity Surveyors", href: live("about/") },
+    { name: "Estimators", href: live("about/") },
+  ] },
+];
+
+// "How we work", in SiBCAS' own words from sibcas.co.uk/about/.
+export const process = [
+  { title: "Design", text: "A full in-house design team offers the full ‘turnkey package’ which includes CAD Technicians, Project Managers, Structural Engineers, Quantity Surveyors and Estimators." },
+  { title: "Consents", text: "Full local authority consents which include planning and building warrant submissions can be provided including liaising with main utilities providers." },
+  { title: "Manufacture", text: "All of our units are manufactured in-house using our qualified staff, prepared to the highest of standards." },
+  { title: "Delivery", text: "Delivered from our own fleet of commercial vehicles and lorry mounted cranes, which allows us to provide a prompt and reliable service." },
+  { title: "Installation", text: "Once on site, Sibcas works conscientiously to the exacting and stringent health and safety standards of the construction sector." },
+];
+
+export const values = [
+  { title: "Quality Assured", icon: "shield", text: "Accredited to ISO9001, ISO45001 and ISO14001, Achilles Building Confidence, SafeContractor, CHAS, Constructionline Gold and FORS Gold." },
+  { title: "Made in house", icon: "factory", text: "Our workforce is directly employed, and we invest heavily in employee development to an excellent standard." },
+  { title: "Family-owned since 1973", icon: "home", text: "Established in 1973, Sibcas is a family-owned and managed business with 5 strategically located depots throughout the UK." },
+];

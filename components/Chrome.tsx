@@ -106,6 +106,7 @@ function Header() {
     };
     const reveal = () => bar.classList.remove("is-hidden");
     tone();
+    requestAnimationFrame(() => bar.classList.add("is-ready"));
     const settle = setTimeout(tone, 400);
     bar.addEventListener("focusin", reveal);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -115,7 +116,8 @@ function Header() {
 
   const show = (index: number) => { setTab(index); setOpen(true); };
   return <>
-    <header className="site-header" ref={header} data-tone="light">
+    {/* Pages that open on a dark hero render the header dark from the first paint, so it never flashes light. */}
+    <header className="site-header" ref={header} data-tone={pathname === "/" ? "dark" : "light"}>
       <div className="header-bar">
         <a href="/" className="brand" aria-label="SiBCAS home"><Logo /></a>
         <nav className="header-nav" aria-label="Main">

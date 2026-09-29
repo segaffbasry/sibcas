@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import { useEffect, useRef } from "react";
+import { preload } from "react-dom";
 import { reducedMotion } from "@/components/Motion";
 import { Pill } from "@/components/ui";
 
@@ -9,6 +10,7 @@ import { Pill } from "@/components/ui";
    the intro bottom-left and two facts bottom-right. The one heavy moment: the film settles from a slight
    zoom while the headline lines rise out of their masks; on scroll the film sinks under the page. */
 export default function Hero() {
+  preload("/video/hero-poster.jpg", { as: "image", fetchPriority: "high" });
   const root = useRef<HTMLElement>(null);
 
   useEffect(() => {

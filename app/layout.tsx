@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, PT_Mono } from "next/font/google";
+import { Geist } from "next/font/google";
 import localFont from "next/font/local";
 import { Shell } from "@/components/Chrome";
 import { posthogSnippet } from "@/lib/posthog";
 import "./globals.css";
 
-// The MeiLog type system: Switzer for headlines (self-hosted from Fontshare), Geist for copy and UI,
-// PT Mono for the "+ LABEL" eyebrows, numbers and small print.
+// The MeiLog type system: Switzer for headlines and numbers (self-hosted from Fontshare), Geist for copy,
+// UI and the small "+ LABEL" eyebrows.
 const display = localFont({
   src: [
     { path: "./fonts/Switzer-400.woff2", weight: "400" },
@@ -16,7 +16,6 @@ const display = localFont({
   variable: "--font-display", display: "swap",
 });
 const ui = Geist({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-ui", display: "swap" });
-const mono = PT_Mono({ subsets: ["latin"], weight: "400", variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: "SiBCAS | Modular Buildings & Site Accommodation for Hire or Sale", template: "%s | SiBCAS" },
@@ -29,7 +28,7 @@ export const viewport: Viewport = { themeColor: "#f2f2f2" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-GB" className={`${display.variable} ${ui.variable} ${mono.variable}`}>
+    <html lang="en-GB" className={`${display.variable} ${ui.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: posthogSnippet }} />
         <noscript><style>{"[data-rise],[data-clip],.hero [data-line]{visibility:visible!important;opacity:1!important;transform:none!important}"}</style></noscript>

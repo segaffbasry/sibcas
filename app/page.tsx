@@ -1,10 +1,10 @@
+import map from "@/content/uk-map.json";
 import Hero from "@/components/Hero";
-import IsoArt from "@/components/IsoArt";
 import Testimonials from "@/components/Testimonials";
-import UkMap from "@/components/UkMap";
+import UkMap, { type MapProject } from "@/components/UkMap";
 import { Arrow, Label, Pill, PostCard } from "@/components/ui";
-import { caseStudies, formatDate, hrefOf, news } from "@/lib/posts";
-import { accreditations, contactHref, process, services, testimonials, values } from "@/lib/site";
+import { caseStudies, findPost, hrefOf, news } from "@/lib/posts";
+import { accreditations, contactHref, process, sectors, services, testimonials, values } from "@/lib/site";
 
 const ValueIcon = ({ name }: { name: string }) => {
   const d: Record<string, string> = {
@@ -15,8 +15,18 @@ const ValueIcon = ({ name }: { name: string }) => {
   return <svg viewBox="0 0 24 24" className="value-icon" aria-hidden="true"><path d={d[name]} fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" strokeLinecap="round" /></svg>;
 };
 
+// Every case study photograph, for the moving film strip of work.
+const gallery = Array.from(new Set(caseStudies.flatMap((p) => p.blocks.flatMap((b) => b.t === "gallery" ? b.imgs : b.t === "img" ? [b.src] : [])).filter((src) => /\.(jpe?g)$/i.test(src))));
+
 export default function Home() {
-  const rows = caseStudies.filter((p) => p.hero).slice(0, 5);
+  const featured = ["taylor-high-school", "celtic-football-club-lennoxtown", "secondary-school-wolverhampton", "the-hamilton-park-racecourse-company-ltd", "xaverian-college"]
+    .map((slug) => findPost("case-study", slug)).filter((p) => p && p.hero) as NonNullable<ReturnType<typeof findPost>>[];
+  const projects: MapProject[] = map.projects.map((m) => {
+    const p = findPost("case-study", m.slug)!;
+    return { ...m, title: p.title, href: hrefOf(p), hero: p.hero, sector: p.categories.find((c) => c !== "Testimonial") ?? "" };
+  });
+  const strip = [gallery.filter((_, i) => i % 2 === 0).slice(0, 14), gallery.filter((_, i) => i % 2 === 1).slice(0, 14)];
+
   return <>
     <Hero />
 
@@ -32,44 +42,87 @@ export default function Home() {
       </div>
     </section>
 
-    {/* MeiLog's ruled service grid: code and title, a line drawing, then a numbered list. */}
+    {/* + SELECTED WORK — their projects at full size: one lead image, four beside it. */}
+    <section className="wrap work" aria-labelledby="work-title">
+      <div className="refs-head">
+        <Label>Selected Work</Label>
+        <a className="text-link" href="/case-studies">All {caseStudies.length} case studies<Arrow /></a>
+      </div>
+      <h2 className="sr-only" id="work-title">Selected work</h2>
+      <div className="work-grid">
+        {featured.map((p, i) => <a key={p.slug} href={hrefOf(p)} className={`work-item${i === 0 ? " work-lead" : ""}`}>
+          <span className="work-media" data-clip>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img data-parallax src={p.hero!} alt="" loading={i === 0 ? "eager" : "lazy"} />
+          </span>
+          <span className="work-caption">
+            <span className="work-meta">{p.categories.filter((c) => c !== "Testimonial").join(", ")}</span>
+            <span className="work-title">{p.title}</span>
+            {i === 0 && p.subtitle && <span className="work-sub">{p.subtitle}</span>}
+          </span>
+          <span className="work-go" aria-hidden="true"><Arrow /></span>
+        </a>)}
+      </div>
+    </section>
+
+    {/* MeiLog's ruled service grid, each discipline led by a SiBCAS photograph. */}
     <section className="services" id="services" aria-label="What we do">
       <div className="services-grid">
         {services.map((s) => <article className="service" key={s.code}>
           <header className="service-head">
-            <p className="mono">{s.code}</p>
+            <p className="kicker">{s.code}</p>
             <h3><a href={s.href}>{s.title}</a></h3>
           </header>
-          <div className="service-art"><IsoArt kind={s.art} /></div>
+          <a className="service-photo" href={s.href} tabIndex={-1} aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={s.img} alt="" loading="lazy" />
+          </a>
           <ol className="service-list">
-            {s.items.map((item, i) => <li key={item.name}><a href={item.href}><span>{item.name}</span><span className="mono">{String(i + 1).padStart(2, "0")}</span></a></li>)}
+            {s.items.map((item, i) => <li key={item.name}><a href={item.href}><span>{item.name}</span><span className="num">{String(i + 1).padStart(2, "0")}</span></a></li>)}
           </ol>
         </article>)}
         <article className="service service-note">
-          <p className="mono">06 — SECTORS</p>
-          <p className="service-note-copy">Our Modular Buildings are manufactured in house to your specific requirements, providing a tailored bespoke service.</p>
+          <p className="kicker">06 — SECTORS</p>
+          <ul className="sector-chips">
+            {sectors.map((s) => <li key={s.name}><a href={s.href}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={s.img} alt="" loading="lazy" /><span>{s.name}</span>
+            </a></li>)}
+          </ul>
           <Pill href="https://sibcas.co.uk/sectors/" tone="dark" external>All Sectors</Pill>
         </article>
       </div>
     </section>
 
-    {/* + HOW WE WORK — navy-washed photograph, statement, five bracketed steps. */}
+    {/* + HOW WE WORK — a photograph under navy, statement, five numbered steps. */}
     <section className="process" data-tone="dark" aria-labelledby="process-title">
       <div className="process-media" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img data-parallax src="/media/2024-09-corridor-units-sibcas.jpg" alt="" loading="lazy" />
+        <img data-parallax src="/media/2024-09-fork-lifting-unit.jpg" alt="" loading="lazy" />
       </div>
       <div className="wrap process-inner">
         <Label className="on-dark">How we work</Label>
         <h2 className="h2" id="process-title" data-rise>Sibcas can arrange short- or long-term rental contracts on accommodation to suit almost any function, from concept and design through to final site installation.</h2>
         <ol className="steps">
           {process.map((step, i) => <li key={step.title} data-rise>
-            <span className="mono">[{String(i + 1).padStart(2, "0")}]</span>
+            <span className="step-num">{String(i + 1).padStart(2, "0")}</span>
             <h3>{step.title}</h3>
             <p>{step.text}</p>
           </li>)}
         </ol>
       </div>
+    </section>
+
+    {/* The work in pictures: two rows of case study photographs drifting in opposite directions. */}
+    <section className="filmstrip" aria-label="SiBCAS projects in pictures">
+      {strip.map((row, r) => <div className={`film-row${r ? " film-rev" : ""}`} key={r}>
+        <div className="film-track">
+          {[0, 1].map((copy) => <ul key={copy} aria-hidden={copy === 1 || undefined}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {row.map((src) => <li key={src}><img src={src} alt="" loading="lazy" /></li>)}
+          </ul>)}
+        </div>
+      </div>)}
     </section>
 
     {/* + ABOUT SIBCAS — offset statement and three values, then the accreditation strip. */}
@@ -86,7 +139,7 @@ export default function Home() {
         </div>
       </div>
       <div className="accred" aria-label="Our Accreditations">
-        <p className="mono">Our Accreditations</p>
+        <p className="kicker">Our Accreditations</p>
         <div className="marquee">
           <div className="marquee-track">
             {[0, 1].map((copy) => <ul key={copy} aria-hidden={copy === 1}>
@@ -98,27 +151,7 @@ export default function Home() {
       </div>
     </section>
 
-    {/* + CASE STUDIES — MeiLog's numbered reference rows; the photograph appears as you hover. */}
-    <section className="section refs" aria-labelledby="refs-title">
-      <div className="wrap refs-head">
-        <Label>Case Studies</Label>
-        <a className="text-link" href="/case-studies">All {caseStudies.length} case studies<Arrow /></a>
-      </div>
-      <h2 className="sr-only" id="refs-title">Case Studies</h2>
-      <ol className="ref-list">
-        {rows.map((p, i) => <li key={p.slug}>
-          <a className="wrap ref" href={hrefOf(p)}>
-            <span className="ref-num">{i + 1}</span>
-            <span className="ref-title">{p.title}</span>
-            <span className="ref-copy">{p.excerpt.length > 170 ? p.excerpt.slice(0, 170).replace(/\s+\S*$/, "") + "…" : p.excerpt}<em className="mono">{[formatDate(p.date), ...p.categories].join(" · ")}</em></span>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            {p.hero && <img className="ref-img" src={p.hero} alt="" loading="lazy" />}
-          </a>
-        </li>)}
-      </ol>
-    </section>
-
-    <UkMap />
+    <UkMap projects={projects} />
 
     <Testimonials items={testimonials} />
 

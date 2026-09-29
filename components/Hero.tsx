@@ -5,9 +5,9 @@ import { useEffect, useRef } from "react";
 import { reducedMotion } from "@/components/Motion";
 import { Pill } from "@/components/ui";
 
-/* MeiLog's opening: a full-bleed photograph washed in navy, the headline top-left under a mono eyebrow,
-   the intro bottom-left and two facts bottom-right. The one heavy moment: the photo settles from a slight
-   zoom while the headline lines rise out of their masks; on scroll the photo sinks under the page. */
+/* MeiLog's opening: a full-bleed film of SiBCAS' work in full colour, the headline top-left under a mono eyebrow,
+   the intro bottom-left and two facts bottom-right. The one heavy moment: the film settles from a slight
+   zoom while the headline lines rise out of their masks; on scroll the film sinks under the page. */
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
 
@@ -17,7 +17,7 @@ export default function Hero() {
     if (reducedMotion()) { gsap.set(lines, { y: 0, yPercent: 0, opacity: 1 }); return; }
     const ctx = gsap.context(() => {
       gsap.timeline({ defaults: { ease: "power4.out" } })
-        .fromTo(".hero-media img", { scale: 1.14 }, { scale: 1, duration: 2.6, ease: "power3.out" }, 0)
+        .fromTo(".hero-video", { scale: 1.1 }, { scale: 1, duration: 2.6, ease: "power3.out" }, 0)
         .fromTo(lines, { y: 0, yPercent: 105, opacity: 1 }, { y: 0, yPercent: 0, duration: 1.3, stagger: .09 }, .3)
         .fromTo(".hero-fade", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 1, stagger: .08 }, .9);
       gsap.to(".hero-media", { yPercent: 16, ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true } });
@@ -28,8 +28,11 @@ export default function Hero() {
   const lines = ["Designers of the Finest", "Relocatable and Modular", "Buildings since 1973"];
   return <section className="hero" ref={root} data-tone="dark">
     <div className="hero-media">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/media/2024-03-sibcas-taylor-high-school-build-aerial.jpg" alt="Aerial view of the SiBCAS modular build at Taylor High School" fetchPriority="high" />
+      {/* Cut from SiBCAS' own photography: six of their builds with slow camera drift and crossfades. */}
+      <video className="hero-video" autoPlay muted loop playsInline preload="auto" poster="/video/hero-poster.jpg" aria-label="SiBCAS modular buildings, site work and delivery">
+        <source src="/video/hero.webm" type="video/webm" />
+        <source src="/video/hero.mp4" type="video/mp4" />
+      </video>
     </div>
     <div className="hero-shade" aria-hidden="true" />
     <div className="wrap hero-inner">

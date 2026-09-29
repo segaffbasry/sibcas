@@ -170,10 +170,10 @@ export const cityHref = (city: string) => city === "Dundee"
   ? live("modular-buildings-dundee/")
   : live(`modular-buildings/temporary-office-${city.toLowerCase().replace(/ /g, "-")}/`);
 
-// MeiLog's service grid: five disciplines, each a numbered list of real SiBCAS pages and ranges.
-export type Service = { code: string; title: string; href: string; art: "modular" | "cabin" | "crane" | "framework" | "plan"; items: NavLink[] };
+// MeiLog's service grid: five disciplines, each with a SiBCAS photograph and a numbered list of real pages and ranges.
+export type Service = { code: string; title: string; href: string; img: string; items: NavLink[] };
 export const services: Service[] = [
-  { code: "01 — BUILD", title: "Modular Buildings", href: live("modular-buildings/"), art: "modular", items: [
+  { code: "01 — BUILD", title: "Modular Buildings", href: live("modular-buildings/"), img: "/media/2025-07-sibcas-consett-academy-photoshoot-oct-24-18.jpg", items: [
     { name: "Classrooms", href: live("modular-buildings/classrooms/") },
     { name: "Office", href: live("modular-buildings/office/") },
     { name: "Health", href: live("modular-buildings/health/") },
@@ -182,7 +182,7 @@ export const services: Service[] = [
     { name: "Rail and Civils", href: live("modular-buildings/rail-and-civils/") },
     { name: "Construction", href: live("modular-buildings/construction/") },
   ] },
-  { code: "02 — HIRE", title: "Site Accommodation", href: live("site-accommodation/"), art: "cabin", items: [
+  { code: "02 — HIRE", title: "Site Accommodation", href: live("site-accommodation/"), img: "/media/2023-11-site-accom-sibcas-units.jpg", items: [
     { name: "Anti-Vandal Cabin Range", href: live("site-accommodation/") },
     { name: "Scout Cabin Range", href: live("site-accommodation/") },
     { name: "Jackcabin Range", href: live("site-accommodation/") },
@@ -190,18 +190,18 @@ export const services: Service[] = [
     { name: "Portable Cabins", href: live("portable-cabins/") },
     { name: "Flexible Accommodation", href: live("flexible-accommodation/") },
   ] },
-  { code: "03 — BUY", title: "Buildings for Sale", href: live("units-for-sale/"), art: "crane", items: [
+  { code: "03 — BUY", title: "Buildings for Sale", href: live("units-for-sale/"), img: "/media/2023-11-scout-cabin-sibcas-unit.jpg", items: [
     { name: "Units for Sale", href: live("units-for-sale/") },
     { name: "Used Site Cabins", href: live("used-site-cabins/") },
     { name: "Used Modular Buildings for Sale", href: live("used-modular-buildings-for-sale/") },
     { name: "Used Sales Contact", href: live("used-sales-contact/") },
   ] },
-  { code: "04 — PROCURE", title: "Procurement & Frameworks", href: live("procurement-frameworks/"), art: "framework", items: [
+  { code: "04 — PROCURE", title: "Procurement & Frameworks", href: live("procurement-frameworks/"), img: "/media/2025-05-plantation-primary-photos-feb-2024-2.jpg", items: [
     { name: "ESPO Modular Buildings Framework (953_26)", href: live("procurement-frameworks/") },
     { name: "LHC Modular Buildings (MB3) Framework", href: live("procurement-frameworks/") },
     { name: "NHS SBS Modular Buildings 3 Framework", href: live("procurement-frameworks/") },
   ] },
-  { code: "05 — DESIGN", title: "Turnkey Package", href: live("about/"), art: "plan", items: [
+  { code: "05 — DESIGN", title: "Turnkey Package", href: live("about/"), img: "/media/2024-09-modular-permaspace-unit-under-construction.jpg", items: [
     { name: "CAD Technicians", href: live("about/") },
     { name: "Project Managers", href: live("about/") },
     { name: "Structural Engineers", href: live("about/") },
